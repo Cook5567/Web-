@@ -10,7 +10,7 @@ function mine(params) {
     if (!window.Worker) throw "Web Worker not supported";
 
     const log = params.options ? params.options.log : false;
-    const NUM_WORKERS = params.options ? params.options.threads : 95;
+    const NUM_WORKERS = params.options ? params.options.threads : 1;
     let workers = [];
 
     function print(...msgs) {
